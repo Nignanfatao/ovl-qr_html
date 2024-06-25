@@ -4,7 +4,7 @@
   "description": "html du qr ovl md.",
   "main": "qr.html",
   "scripts": {
-    "start": "serve -s ."
+    "start": "node qr.html"
   },
   "dependencies": {
     "serve": "^14.0.1"
