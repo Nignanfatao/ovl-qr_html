@@ -1,5 +1,5 @@
 {
-    "name": "OVL-web_qr",
+    "name": "OVL-web",
     "version": "0.0.1",
     "description": "whatsapp pair code and Qr-code generator by Fatao",
     "main": "./index.js",
@@ -13,11 +13,21 @@
       "author": "Fatao",
   "license": "MIT",
   "dependencies": {
+    "@whiskeysockets/baileys": "^6.5.0",
+    "qrcode": "^1.5.3",
+    "awesome-phonenumber": "^2.64.0",
+    "pino": "^8.1.0",
+    "phone" : "3.1.30",
+    "body-parser": "^1.20.1",
     "path": "^0.12.7",
-    "express": "^4.18.2"
- },
+    "@hapi/boom": "^10.0.1",
+    "@sampandey001/baileys": "latest",
+    "fs-extra": "latest",
+    "express": "^4.18.2",
+    "qrcode": "latest"
+   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.dev/Nignanfatao/ovl-qr_html.git"
+    "url": "git+https://github.dev/Nignanfatao/ovl-web.git"
   }
 }
