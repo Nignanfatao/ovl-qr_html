@@ -136,7 +136,7 @@
 
     async function fetchQRCode() {
       try {
-        const response = await axios.get('qr'); // URL où est exposée l'API du QR code
+        const response = await axios.get('/qr'); // URL où est exposée l'API du QR code
         const qrImageBase64 = response.data;
         const qrImageElement = document.createElement('img');
         qrImageElement.src = `data:image/png;base64, ${qrImageBase64}`;
