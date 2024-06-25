@@ -1,0 +1,12 @@
+{
+  "name": "salut-site",
+  "version": "1.0.0",
+  "description": "Un simple site web qui affiche 'Salut, comment tu vas?' en rouge.",
+  "main": "index.html",
+  "scripts": {
+    "start": "serve -s ."
+  },
+  "dependencies": {
+    "serve": "^14.0.1"
+  }
+}
