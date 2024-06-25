@@ -1,8 +1,8 @@
 {
-  "name": "salut-site",
+  "name": "html qr ovl",
   "version": "1.0.0",
-  "description": "Un simple site web qui affiche 'Salut, comment tu vas?' en rouge.",
-  "main": "index.html",
+  "description": "html du qr ovl md.",
+  "main": "qr.html",
   "scripts": {
     "start": "serve -s ."
   },
