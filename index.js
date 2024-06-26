@@ -1,20 +1,20 @@
 const express = require('express');
 const app = express();
-__path = process.cwd();
 const bodyParser = require("body-parser");
 const PORT = process.env.PORT || 8000;
 require('events').EventEmitter.defaultMaxListeners = 500;
-const dataStore = require('./dataStore'); // Importer le module
+const router = require('./qr'); // Importer le fichier de routes
+
+// Configurer le middleware body-parser
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use('/qr', (req, res) => {
-   res.send(dataStore.getQRData());
-   console.log('lien qr:',dataStore.getQRData)
-});
+// Utiliser le routeur pour les routes commençant par /qr
+app.use('/qr', router);
 
-app.use('/', async (req, res, next) => {
-    res.sendFile(__path + '/qr.html');
+// Route pour servir le fichier HTML
+app.use('/', (req, res) => {
+    res.sendFile(__dirname + '/qr.html');
 });
 
 app.listen(PORT, () => {
