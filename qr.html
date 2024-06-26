@@ -28,7 +28,7 @@
 
     .box {
       width: 300px;
-      height: 400px;
+      height: 350px;
       padding: 20px;
       position: relative;
       text-align: center;
@@ -78,23 +78,6 @@
     #reload-button:hover {
       background-color: #555;
     }
-
-    .qr-code {
-      background-color: transparent !important; /* Fond transparent */
-      filter: brightness(0) invert(1); /* Inversion des couleurs pour rendre les traits noirs */
-    }
-
-    .input-container {
-      margin-top: 10px;
-    }
-
-    .input-container label {
-      margin-right: 10px;
-    }
-
-    .input-container input {
-      width: 60px;
-    }
   </style>
 </head>
 <body>
@@ -103,12 +86,6 @@
       <div class="box" id="box">
         <div id="text">
           <h3 class="centered-text">OVL-MD QR-CODE</h3>
-          <div class="input-container">
-            <label for="qr-width">Largeur:</label>
-            <input type="number" id="qr-width" value="200">
-            <label for="qr-height">Hauteur:</label>
-            <input type="number" id="qr-height" value="200">
-          </div>
           <div id="qr-container">
             <!-- L'image du QR code généré sera ajoutée ici -->
           </div>
@@ -119,6 +96,7 @@
             </div>
             <button id="reload-button" style="display: none;">Recharger</button>
           </div>
+          
         </div>
       </div>
     </div>
@@ -128,9 +106,6 @@
     const progressBarElement = document.getElementById("progress-bar");
     const messageElement = document.getElementById("message");
     const reloadButtonElement = document.getElementById("reload-button");
-    const qrContainer = document.getElementById("qr-container");
-    const qrWidthInput = document.getElementById("qr-width");
-    const qrHeightInput = document.getElementById("qr-height");
 
     function showMessageAndReloadButton() {
       progressBarElement.style.display = "none";
@@ -166,23 +141,11 @@
         const qrImageBase64 = response.data;
         const qrImageElement = document.createElement('img');
         qrImageElement.src = `data:image/png;base64, ${qrImageBase64}`;
-        qrImageElement.style.width = `${qrWidthInput.value}px`;
-        qrImageElement.style.height = `${qrHeightInput.value}px`;
-        qrImageElement.classList.add('qr-code'); // Ajout de la classe pour le fond transparent
-        qrContainer.appendChild(qrImageElement);
+        qrImageElement.style.maxWidth = '200px';
+        qrImageElement.style.maxHeight = '200px';
+        document.getElementById('qr-container').appendChild(qrImageElement);
       } catch (error) {
         console.error('Erreur lors de la récupération du QR code :', error);
-      }
-    }
-
-    qrWidthInput.addEventListener('change', updateQRCodeSize);
-    qrHeightInput.addEventListener('change', updateQRCodeSize);
-
-    function updateQRCodeSize() {
-      const qrImage = document.querySelector('#qr-container img');
-      if (qrImage) {
-        qrImage.style.width = `${qrWidthInput.value}px`;
-        qrImage.style.height = `${qrHeightInput.value}px`;
       }
     }
   </script>
