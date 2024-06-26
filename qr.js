@@ -3,6 +3,7 @@ const router = express.Router();
 const fs = require('fs-extra');
 const { toDataURL } = require('qrcode');
 const { default: OvlWASocket, useMultiFileAuthState, Browsers, delay, DisconnectReason, makeInMemoryStore } = require('@sampandey001/baileys');
+const dataStore = require('./dataStore'); // Importer le module
 
 const authInfoPath = __dirname + '/auth_info_baileys';
 
@@ -27,7 +28,7 @@ try {
     console.error('Erreur lors du vidage du répertoire auth_info_baileys :', error);
 }
 
-router.get('/qr', async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         const { state, saveCreds } = await useMultiFileAuthState(authInfoPath);
         let ovl = OvlWASocket({
@@ -42,6 +43,7 @@ router.get('/qr', async (req, res) => {
             if (qr) {
                 const qrDataURL = await toDataURL(qr); // Convertir le QR code en base64
                 const data = qrDataURL.split(',')[1]; // Envoyer seulement la partie base64 de l'URL
+                dataStore.setQRData(data); // Stocker la donnée
                 res.send(data);
             }
 
