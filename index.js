@@ -4,8 +4,10 @@ __path = process.cwd();
 const bodyParser = require("body-parser");
 const PORT = process.env.PORT || 8000;
 require('events').EventEmitter.defaultMaxListeners = 500;
-let data = require('./qr');
+const dataStore = require('./dataStore'); // Importer le module
 
+// Exemple d'utilisation
+const data = dataStore.getQRData();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
