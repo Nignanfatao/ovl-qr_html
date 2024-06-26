@@ -2,10 +2,10 @@ const express = require('express');
 const router = express.Router();
 const fs = require('fs-extra');
 const pino = require('pino');
-const { default: makeWASocket, useMultiFileAuthState, DisconnectReason, Browsers } = require('whiskeysockets/baileys');
+const { default: makeWASocket, useMultiFileAuthState, DisconnectReason, Browsers } = require('@whiskeysockets/baileys');
 const { Boom } = require('@hapi/boom');
 const { toDataURL } = require('qrcode');
-const { delay } = require('whiskeysockets/baileys');
+const { delay } = require('@whiskeysockets/baileys');
 
 // Chemin pour stocker les informations d'authentification
 const authInfoPath = './auth_info';
