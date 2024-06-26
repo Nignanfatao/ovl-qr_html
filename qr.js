@@ -1,53 +1,37 @@
 const express = require('express');
 const router = express.Router();
 const fs = require('fs-extra');
-const { toDataURL } = require('qrcode');
-const { default: OvlWASocket, useMultiFileAuthState, Browsers, delay, DisconnectReason } = require('@sampandey001/baileys');
 const pino = require('pino');
+const { default: makeWASocket, useMultiFileAuthState, DisconnectReason, Browsers } = require('@adiwajshing/baileys');
 const { Boom } = require('@hapi/boom');
+const { toDataURL } = require('qrcode');
+const { delay } = require('@adiwajshing/baileys/lib/Utils');
 
-const authInfoPath = __dirname + '/auth_info_baileys';
-
-// Vérifier si le répertoire existe déjà
-if (!fs.existsSync(authInfoPath)) {
-    try {
-        fs.mkdirSync(authInfoPath);
-        console.log('Répertoire auth_info_baileys créé avec succès.');
-    } catch (error) {
-        console.error('Erreur lors de la création du répertoire auth_info_baileys :', error);
-    }
-} else {
-    console.log('Le répertoire auth_info_baileys existe déjà.');
-}
-
-// Utiliser fs.emptyDirSync après avoir vérifié ou créé le répertoire
-try {
-    fs.emptyDirSync(authInfoPath);
-    console.log('Contenu du répertoire auth_info_baileys vidé avec succès.');
-} catch (error) {
-    console.error('Erreur lors du vidage du répertoire auth_info_baileys :', error);
-}
+// Chemin pour stocker les informations d'authentification
+const authInfoPath = './auth_info';
 
 router.get('/', async (req, res) => {
     try {
         const { state, saveCreds } = await useMultiFileAuthState(authInfoPath);
-        let ovl = OvlWASocket({
+        let ovl = makeWASocket({
             printQRInTerminal: false,
             logger: pino({ level: 'silent' }),
             browser: Browsers.baileys('Desktop'),
             auth: state
         });
 
+        let sent = false; // Variable pour suivre si une réponse a déjà été envoyée
+
         ovl.ev.on('connection.update', async (s) => {
             const { connection, lastDisconnect, qr } = s;
-            if (qr) {
+            if (qr && !sent) {
                 const qrDataURL = await toDataURL(qr); // Convertir le QR code en base64
                 const data = qrDataURL.split(',')[1]; // Envoyer seulement la partie base64 de l'URL
                 res.send(data);
-                console.log('Qr code link obtenu')
+                sent = true; // Marquer que la réponse a été envoyée
             }
 
-            if (connection == 'open') {
+            if (connection === 'open' && !sent) {
                 await delay(3000);
                 let user = ovl.user.id;
 
@@ -58,12 +42,14 @@ router.get('/', async (req, res) => {
                 await delay(1000);
                 try {
                     await fs.emptyDirSync(authInfoPath);
-                } catch (e) {}
+                } catch (e) {
+                    console.log('Erreur lors de la suppression des fichiers :', e);
+                }
             }
 
             ovl.ev.on('creds.update', saveCreds);
 
-            if (connection === 'close') {
+            if (connection === 'close' && !sent) {
                 let reason = new Boom(lastDisconnect?.error)?.output.statusCode;
                 if (reason === DisconnectReason.connectionClosed) {
                     console.log('Connection fermée');
@@ -78,6 +64,17 @@ router.get('/', async (req, res) => {
                     console.log('Connexion fermée avec le bot. Veuillez exécuter à nouveau.');
                     console.log(reason);
                 }
+                res.status(500).send('Connexion fermée avec le bot. Veuillez exécuter à nouveau.');
+                sent = true; // Marquer que la réponse a été envoyée
+            }
+        });
+
+        // Gestion des erreurs
+        ovl.ev.on('error', (err) => {
+            console.error('Erreur de connexion :', err);
+            if (!sent) {
+                res.status(500).send('Erreur lors de la génération du QR code');
+                sent = true; // Marquer que la réponse a été envoyée
             }
         });
     } catch (err) {
