@@ -27,7 +27,7 @@ try {
     console.error('Erreur lors du vidage du répertoire auth_info_baileys :', error);
 }
 
-router.get('/', async (req, res) => {
+router.get('/qr', async (req, res) => {
     try {
         const { state, saveCreds } = await useMultiFileAuthState(authInfoPath);
         let ovl = OvlWASocket({
@@ -40,8 +40,9 @@ router.get('/', async (req, res) => {
         ovl.ev.on('connection.update', async (s) => {
             const { connection, lastDisconnect, qr } = s;
             if (qr) {
-                const data = await toDataURL(qr); // Convertir le QR code en base64
-                res.send(qrDataURL.split(',')[1]); // Envoyer seulement la partie base64 de l'URL
+                const qrDataURL = await toDataURL(qr); // Convertir le QR code en base64
+                const data = qrDataURL.split(',')[1]; // Envoyer seulement la partie base64 de l'URL
+                res.send(data);
             }
 
             if (connection == 'open') {
