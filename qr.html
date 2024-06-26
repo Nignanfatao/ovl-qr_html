@@ -78,6 +78,11 @@
     #reload-button:hover {
       background-color: #555;
     }
+
+    img {
+      width: 200px;
+      height: 200px;
+    }
   </style>
 </head>
 <body>
@@ -96,12 +101,12 @@
             </div>
             <button id="reload-button" style="display: none;">Recharger</button>
           </div>
-          
         </div>
       </div>
     </div>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.4.4/build/qrcode.min.js"></script>
   <script>
     const progressBarElement = document.getElementById("progress-bar");
     const messageElement = document.getElementById("message");
@@ -138,12 +143,16 @@
     async function fetchQRCode() {
       try {
         const response = await axios.get('/qr'); // URL où est exposée l'API du QR code
-        const qrImageBase64 = response.data;
-        const qrImageElement = document.createElement('img');
-        qrImageElement.src = `data:image/png;base64, ${qrImageBase64}`;
-        qrImageElement.style.maxWidth = '200px';
-        qrImageElement.style.maxHeight = '200px';
-        document.getElementById('qr-container').appendChild(qrImageElement);
+        const qrCode = response.data;
+        QRCode.toDataURL(qrCode, { width: 200, margin: 0, color: { dark: '#000', light: '#0000' } }, (err, url) => {
+          if (err) {
+            console.error('Erreur lors de la génération du QR code :', err);
+            return;
+          }
+          const qrImageElement = document.createElement('img');
+          qrImageElement.src = url;
+          document.getElementById('qr-container').appendChild(qrImageElement);
+        });
       } catch (error) {
         console.error('Erreur lors de la récupération du QR code :', error);
       }
