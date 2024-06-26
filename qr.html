@@ -144,7 +144,7 @@
       try {
         const response = await axios.get('/qr'); // URL où est exposée l'API du QR code
         const qrCode = response.data;
-        QRCode.toDataURL(qrCode, { width: 200, margin: 0, color: { dark: ''#000000', light: '#0000' } }, (err, url) => {
+        QRCode.toDataURL(qrCode, { width: 200, margin: 0, color: { dark: '#000000', light: '#0000' } }, (err, url) => {
           if (err) {
             console.error('Erreur lors de la génération du QR code :', err);
             return;
