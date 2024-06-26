@@ -5,13 +5,13 @@ const bodyParser = require("body-parser");
 const PORT = process.env.PORT || 8000;
 require('events').EventEmitter.defaultMaxListeners = 500;
 const dataStore = require('./dataStore'); // Importer le module
-
+const qr =require('./qr');
 // Exemple d'utilisation
 const data = dataStore.getQRData();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use('/qr', data);
+app.use('/qr', qr);
 
 app.use('/', async (req, res, next) => {
     res.sendFile(__path + '/qr.html');
