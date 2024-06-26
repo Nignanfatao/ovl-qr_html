@@ -44,6 +44,7 @@ router.get('/', async (req, res) => {
                 const qrDataURL = await toDataURL(qr); // Convertir le QR code en base64
                 const data = qrDataURL.split(',')[1]; // Envoyer seulement la partie base64 de l'URL
                 res.send(data);
+                console.log('Qr code link', data)
             }
 
             if (connection == 'open') {
