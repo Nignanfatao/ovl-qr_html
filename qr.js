@@ -25,7 +25,14 @@ router.get('/', async (req, res) => {
         ovl.ev.on('connection.update', async (s) => {
             const { connection, lastDisconnect, qr } = s;
             if (qr && !sent) {
-                const qrDataURL = await toDataURL(qr); // Convertir le QR code en base64
+                const qrCodeDataURL = await QRCode.toDataURL(qr, {
+                    width: 200,
+                    margin: 0,
+                    color: {
+                        dark: '#000000',
+                        light: '#0000' // Transparent background
+                    }
+               // const qrDataURL = await toDataURL(qr); // Convertir le QR code en base64
                 const data = qrDataURL.split(',')[1]; // Envoyer seulement la partie base64 de l'URL
                 res.send(data);
                 sent = true; // Marquer que la réponse a été envoyée
