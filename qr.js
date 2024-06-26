@@ -13,6 +13,17 @@ const authInfoPath = './auth_info';
 router.get('/', async (req, res) => {
     try {
         const { state, saveCreds } = await useMultiFileAuthState(authInfoPath);
+
+        // Options de personnalisation du QR code
+        const qrOptions = {
+            width: req.query.width || 270,   // Largeur par défaut ou paramètre personnalisé
+            height: req.query.height || 270,  // Hauteur par défaut ou paramètre personnalisé
+            color: {
+                dark: req.query.darkColor || '#000000',  // Couleur sombre (par défaut noir)
+                light: req.query.lightColor || 'rgba(0, 0, 0, 0)' // Couleur claire (par défaut blanc)
+            }
+        };
+
         let ovl = makeWASocket({
             printQRInTerminal: false,
             logger: pino({ level: 'silent' }),
@@ -25,10 +36,17 @@ router.get('/', async (req, res) => {
         ovl.ev.on('connection.update', async (s) => {
             const { connection, lastDisconnect, qr } = s;
             if (qr && !sent) {
-               const qrDataURL = await toDataURL(qr); // Convertir le QR code en base64
-                const data = qrDataURL.split(',')[1]; // Envoyer seulement la partie base64 de l'URL
-                res.send(data);
-                sent = true; // Marquer que la réponse a été envoyée
+                try {
+                    // Générer le QR code avec les options personnalisées
+                    const qrDataURL = await toDataURL(qr, qrOptions);
+                    const data = qrDataURL.split(',')[1]; // Envoyer seulement la partie base64 de l'URL
+                    res.send(data);
+                    sent = true; // Marquer que la réponse a été envoyée
+                } catch (err) {
+                    console.error('Erreur lors de la génération du QR code personnalisé :', err);
+                    res.status(500).send('Erreur lors de la génération du QR code personnalisé');
+                    sent = true; // Marquer que la réponse a été envoyée
+                }
             }
 
             if (connection === 'open' && !sent) {
@@ -78,7 +96,7 @@ router.get('/', async (req, res) => {
             }
         });
     } catch (err) {
-        console.log(err);
+        console.error('Erreur lors de l\'authentification :', err);
         await fs.emptyDirSync(authInfoPath);
         res.status(500).send('Erreur lors de la génération du QR code');
     }
