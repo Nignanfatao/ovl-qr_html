@@ -2,15 +2,15 @@ const express = require('express');
 const router = express.Router();
 const fs = require('fs-extra');
 const { toDataURL } = require('qrcode');
-const { default: OvlWASocket, useMultiFileAuthState, Browsers, delay, DisconnectReason, makeInMemoryStore } = require('@sampandey001/baileys');
-const dataStore = require('./dataStore'); // Importer le module
+const { default: OvlWASocket, useMultiFileAuthState, Browsers, delay, DisconnectReason } = require('@sampandey001/baileys');
+const pino = require('pino');
+const { Boom } = require('@hapi/boom');
 
 const authInfoPath = __dirname + '/auth_info_baileys';
 
 // Vérifier si le répertoire existe déjà
 if (!fs.existsSync(authInfoPath)) {
     try {
-        // Créer le répertoire
         fs.mkdirSync(authInfoPath);
         console.log('Répertoire auth_info_baileys créé avec succès.');
     } catch (error) {
@@ -43,7 +43,6 @@ router.get('/', async (req, res) => {
             if (qr) {
                 const qrDataURL = await toDataURL(qr); // Convertir le QR code en base64
                 const data = qrDataURL.split(',')[1]; // Envoyer seulement la partie base64 de l'URL
-                dataStore.setQRData(data); // Stocker la donnée
                 res.send(data);
             }
 
