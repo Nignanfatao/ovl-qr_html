@@ -10,6 +10,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use('/qr', (req, res) => {
    res.send(dataStore.getQRData());
+   console.log('lien qr:',dataStore.getQRData)
 });
 
 app.use('/', async (req, res, next) => {
