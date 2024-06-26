@@ -5,7 +5,7 @@ const pino = require('pino');
 const { default: makeWASocket, useMultiFileAuthState, DisconnectReason, Browsers } = require('@adiwajshing/baileys');
 const { Boom } = require('@hapi/boom');
 const { toDataURL } = require('qrcode');
-const { delay } = require('@adiwajshing/baileys/lib/Utils');
+const { delay } = require('whiskeysockets/baileys/lib/Utils');
 
 // Chemin pour stocker les informations d'authentification
 const authInfoPath = './auth_info';
