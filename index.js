@@ -9,12 +9,9 @@ const router = require('./qr'); // Importer le fichier de routes
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Utiliser le routeur pour les routes commençant par /qr
-app.use('/qr', router);
-
 // Route pour servir le fichier HTML
 app.use('/', (req, res) => {
-    res.sendFile(__dirname + '/qr.html');
+    res.sendFile(__dirname + '/code.html');
 });
 
 app.listen(PORT, () => {
