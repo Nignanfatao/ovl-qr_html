@@ -1,21 +1,15 @@
 const express = require('express');
+const path = require('path');
+
 const app = express();
-const bodyParser = require("body-parser");
-const PORT = process.env.PORT || 8000;
-require('events').EventEmitter.defaultMaxListeners = 500;
-const router = require('./qr'); // Importer le fichier de routes
+const port = 3000;
 
-// Configurer le middleware body-parser
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-
-// Route pour servir le fichier HTML
-app.use('/', (req, res) => {
-    res.sendFile(__dirname + '/code.html');
+// Servir le fichier HTML
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'code.html'));
 });
 
-app.listen(PORT, () => {
-    console.log(`Serveur en cours d'exécution sur http://localhost:${PORT}`);
+// Démarrer le serveur
+app.listen(port, () => {
+    console.log(`Le serveur tourne sur http://localhost:${port}`);
 });
-
-module.exports = app;
