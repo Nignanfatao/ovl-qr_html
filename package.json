@@ -8,7 +8,7 @@
     "node" : ">=22.1.0"
     },
     "scripts": {
-    "start": "node index.js"
+    "start": "node code.html"
   },
       "author": "Fatao",
   "license": "MIT",
